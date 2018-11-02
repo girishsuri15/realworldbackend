@@ -30,10 +30,9 @@ module.exports = (db) => {
         },
     })
     User.prototype.getToken=function(){
-        return jwt.sign({email : this.email,username: this.username},env.jwtTokenKey);
+        return jwt.sign({email : this.email,username: this.username,id:this.id},env.jwtTokenKey);
     }
     User.prototype.toAuthFor=function(){
-        console.log(this);
         return{
             username:this.username,
             email:this.email,
@@ -41,8 +40,15 @@ module.exports = (db) => {
             image:this.image,
             Token:this.getToken()
         }
+    },
+    User.prototype.toJSONFor=function(){
+        return{
+            username:this.username,
+            email:this.email,
+            bio:this.bio,
+            image:this.image,
+        }
     }
-  
     return User;
 }
 

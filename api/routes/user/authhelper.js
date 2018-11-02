@@ -4,13 +4,27 @@ const Sequelize = require('sequelize')
 const Op = Sequelize.Op;
 const AuthHelper = {
     valiadteUserData:(req,res,next)=>{
-        if(Helper.isValidateEmail(req.body.user.email) && req.body.user.password.length>=8 && req.body.user.username!=null)
-        {
-            next();
-        }
-        else
-        {
-            res.status(200).json({"errors": {"email": ["is invalid"],"username": ["is invalid"]}});
+        if(req.baseUrl === '/api/users')
+            {
+                if(Helper.isValidateEmail(req.body.user.email) && req.body.user.password.length>=8 && req.body.user.username!=null)
+                    {
+                        next();
+                    }
+                 else
+                    {
+                        res.status(200).json({"errors": {"email": ["is invalid"],"username": ["is invalid"]}});
+                    }    
+            }
+        else if(req.baseUrl === '/api/users/login')
+        { 
+            if(Helper.isValidateEmail(req.body.user.email) && req.body.user.password.length>=8)
+            {
+                next();
+            }    
+            else
+            {
+                res.status(200).json({"errors": {"email": ["is invalid"],"username": ["is invalid"]}});
+            }    
         }
     },
     checkUserExist:(req,res,next)=>{
@@ -30,5 +44,6 @@ const AuthHelper = {
         })
         .catch((err)=>{console.log(err)});
     }
+     
 }
 module.exports =  AuthHelper 

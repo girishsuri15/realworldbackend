@@ -5,20 +5,27 @@ const sequelize = require('sequelize')
 const articleTableCreate = require('./model/article')
 const usersTableCreate = require('./model/users')
 const tagsTableCreate = require('./model/tags')
+const commentTableCreate=require('./model/comment')
 
 /*creating table */
 const Article = articleTableCreate(db)
 const User = usersTableCreate(db)
-const Tags = tagsTableCreate(db)
+const Tag = tagsTableCreate(db)
+const Comment = commentTableCreate(db)
 
 
 
 /*defeing all the realtion among the models */
 User.hasMany(Article)
-Article.hasMany(Tags)
-Tags.belongsTo(Article)
+User.hasMany(Comment)
+Article.belongsTo(User)
+Article.hasMany(Comment)
+Comment.belongsTo(Article)
+Comment.belongsTo(User)
+//Article.hasMany(Tag)
+//Tag.belongsToMany(Article)
 
 
 /*-------------------------------------------- */
 
-module.exports = { Article,User,Tags }
+module.exports = { Article,User,Tag,Comment}

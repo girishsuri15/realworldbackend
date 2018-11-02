@@ -1,26 +1,27 @@
 const { Router } = require('express')
 const { Op } = require('sequelize')
-//const { User } = require('../db/index')
+const { User } = require('../../db/index')
+const AuthHelper = require('./authhelper')
 const route = Router()
 
 
-/*define various api for login/auth  here
- 
-*/
-route.get('/', async (req, res) => {
-    // const article = await Article.findAll({
-       
-    // })
-    //   res.status(200).json(article);
-    });
-
     
-route.post('/',async (req,res)=>{
-    
-    console.log("push into temp token");
-})  
-
-
-
-
+route.post('/',AuthHelper.valiadteUserData,async (req,res)=>{
+    console.log("================login procedure statred===========");
+    const existUser = await User.findOne({
+        where: {
+                [Op.and]: [{email: req.body.user.email}, {hash: req.body.user.password}] 
+            }
+        })
+            if(existUser===null)
+                {
+                    res.status(422).json({"errors": {"email or password": ["is invalid"]}});
+                    console.log("------------auth failed-------------");
+                }
+            else
+                {
+                    res.status(200).json({user: existUser.toAuthFor()});
+                    console.log("=============login sucessfull procedure ended========");
+            }       
+        })
 module.exports = route

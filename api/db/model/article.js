@@ -1,7 +1,9 @@
 const Sequelize = require('sequelize')
 const DT = Sequelize.DataTypes
+const Helper=require('../../../Helper/converter')
+const User = require('.././index')
 module.exports = (db) => {
-   let article = db.define('article', {
+   let Article = db.define('article', {
         slug: {
             type:DT.STRING(100),
             allowNull : false,
@@ -22,11 +24,21 @@ module.exports = (db) => {
         "favoritesCount":  {
             type: DT.INTEGER,
         defaultValue: 0,
+        },
+        "tag":{
+            type:DT.STRING(200)
         }
     })
-    article.prototype.abc=()=>{
-        console.log("girish suri abc");
+    Article.prototype.toJSONFor=function(user){
+        return{
+            slug:this.slug,
+            body: this.body,
+            title: this.title,
+            description: this.description,
+            tag:Helper.parseStringIntoArray(this.tag),
+            author:user.toJSONFor()
+        }
     }
-return article;
+return Article;
 }    
     
